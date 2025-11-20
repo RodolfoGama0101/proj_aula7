@@ -70,8 +70,13 @@ export class DescarteService {
         const pontosSnapshot = await getDocs(collection(db, "pontos-coleta"));
         const registrosSnapshot = await getDocs(collection(db, "registros-descarte"));
         
-        const usuariosUnicos = new Set<string>();
+        const mapNomes: Record<string, string> = {};
+        pontosSnapshot.forEach(doc => {
+            const d = doc.data();
+            mapNomes[doc.id] = d.name;
+        });
 
+        const usuariosUnicos = new Set<string>();
         const totalPontos = pontosSnapshot.size;
         
         const contagemPontos: Record<string, number> = {};
@@ -80,7 +85,6 @@ export class DescarteService {
         const hoje = new Date();
         const trintaDiasAtras = new Date();
         trintaDiasAtras.setDate(hoje.getDate() - 30);
-        
         const sessentaDiasAtras = new Date();
         sessentaDiasAtras.setDate(hoje.getDate() - 60);
 
@@ -132,7 +136,11 @@ export class DescarteService {
 
         return {
             pontoMaisPopular: pontoVencedor 
-                ? { id: pontoVencedor.key, totalRegistros: pontoVencedor.value } 
+                ? { 
+                    id: pontoVencedor.key, 
+                    name: mapNomes[pontoVencedor.key] || 'Nome não encontrado', // <--- AQUI APARECE O NOME
+                    totalRegistros: pontoVencedor.value 
+                  } 
                 : null,
             residuoMaisFrequente: residuoVencedor 
                 ? { tipo: residuoVencedor.key, totalRegistros: residuoVencedor.value } 
@@ -160,5 +168,13 @@ export class DescarteService {
         });
 
         return maiorChave ? { key: maiorChave, value: maiorValor } : null;
+    }
+
+    async listarTodosPontos() {
+        const snapshot = await getDocs(collection(db, "pontos-coleta"));
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
     }
 }

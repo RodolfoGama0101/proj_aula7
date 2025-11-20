@@ -28,4 +28,9 @@ export class DescarteController {
     getRelatorioDescarte() { 
         return this.descarteService.gerarRelatorioDescarte();
     }
+
+    @Get('pontos')
+    getAllPontos() {
+        return this.descarteService.listarTodosPontos();
+    }
 }

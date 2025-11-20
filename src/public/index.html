@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoDescarte - Gestão de Resíduos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="logo">🌱 EcoDescarte</div>
+        <nav>
+            <button class="nav-btn active" onclick="showTab('tab-cadastro-ponto')">Novo Ponto</button>
+            <button class="nav-btn" onclick="showTab('tab-registro-descarte')">Descartar</button>
+            <button class="nav-btn" onclick="showTab('tab-historico')">Histórico</button>
+            <button class="nav-btn" onclick="showTab('tab-relatorio')">Relatórios</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="tab-cadastro-ponto" class="tab-content active">
+            <div class="card">
+                <h2>Cadastrar Ponto de Coleta</h2>
+                <form id="form-ponto">
+                    <div class="form-group">
+                        <label>Nome do Local</label>
+                        <input type="text" name="name" required placeholder="Ex: Ecoponto Centro">
+                    </div>
+                    <div class="form-group">
+                        <label>Bairro</label>
+                        <input type="text" name="bairro" required placeholder="Ex: Vila Mariana">
+                    </div>
+                    <div class="form-group row">
+                        <label class="switch-label">
+                            <input type="checkbox" name="snPublico">
+                            <span class="slider"></span>
+                            É público?
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Itens Aceitos (Selecione)</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="Papel" name="categorias"> Papel</label>
+                            <label><input type="checkbox" value="Vidro" name="categorias"> Vidro</label>
+                            <label><input type="checkbox" value="Plástico" name="categorias"> Plástico</label>
+                            <label><input type="checkbox" value="Metal" name="categorias"> Metal</label>
+                            <label><input type="checkbox" value="Eletrônicos" name="categorias"> Eletrônicos</label>
+                            <label><input type="checkbox" value="Orgânico" name="categorias"> Orgânico</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Latitude</label>
+                            <input type="number" step="any" name="latitude" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Longitude</label>
+                            <input type="number" step="any" name="longitude" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Salvar Ponto</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="tab-registro-descarte" class="tab-content">
+            <div class="card">
+                <h2>Registrar Descarte</h2>
+                <form id="form-descarte">
+                    <div class="form-group">
+                        <label>Seu Nome</label>
+                        <input type="text" name="nomeUsuario" required placeholder="Quem está descartando?">
+                    </div>
+                    <div class="form-group">
+                        <label>Ponto de Descarte</label>
+                        <select name="idPontoDescarte" id="select-pontos" required>
+                            <option value="">Carregando pontos...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Resíduo</label>
+                        <select name="tipoResiduo" required>
+                            <option value="Papel">Papel</option>
+                            <option value="Vidro">Vidro</option>
+                            <option value="Plástico">Plástico</option>
+                            <option value="Metal">Metal</option>
+                            <option value="Eletrônicos">Eletrônicos</option>
+                            <option value="Orgânico">Orgânico</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data do Descarte</label>
+                        <input type="date" name="dataDescarte" required>
+                    </div>
+                    <button type="submit" class="btn-success">Confirmar Descarte</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="tab-historico" class="tab-content">
+            <div class="card full-width">
+                <h2>Histórico de Descartes</h2>
+                <div class="search-bar">
+                    <input type="text" id="busca-input" placeholder="Busque por nome, tipo, ponto ou data (DD/MM/AAAA)...">
+                    <button onclick="buscarHistorico()" class="btn-primary">Pesquisar</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="tabela-historico">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Usuário</th>
+                                <th>Resíduo</th>
+                                <th>ID Ponto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-relatorio" class="tab-content">
+            <h2>Dashboard Informativo</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <span class="material-icons icon">people</span>
+                    <h3>Total Usuários</h3>
+                    <p id="rel-usuarios">0</p>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons icon">place</span>
+                    <h3>Total Pontos</h3>
+                    <p id="rel-pontos">0</p>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons icon">today</span>
+                    <h3>Média Diária (30d)</h3>
+                    <p id="rel-media">0.0</p>
+                </div>
+                <div class="stat-card">
+                    <span class="material-icons icon">trending_up</span>
+                    <h3>Crescimento</h3>
+                    <p id="rel-crescimento">0%</p>
+                </div>
+                <div class="stat-card wide">
+                    <span class="material-icons icon">star</span>
+                    <h3>Destaques</h3>
+                    <div class="highlight-info">
+                        <div><strong>Ponto + Popular:</strong> <span id="rel-pop-ponto">-</span></div>
+                        <div><strong>Resíduo + Comum:</strong> <span id="rel-pop-residuo">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast">Operação realizada!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
